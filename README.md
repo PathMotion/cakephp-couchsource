@@ -62,7 +62,7 @@ Use Cases
 	
 	class MyModel extends Model {
 		
-		fucntion create_record() {
+		function create_record() {
 			$this->save(array('MyModel' => array(
 				'anyfield' => 'anyvalue',
 				'anotherfield' => array(
@@ -79,7 +79,7 @@ Use Cases
 
 	class MyModel extends Model {
 		
-		fucntion update_record($id) {
+		function update_record($id) {
 			$this->save(array('MyModel' => array(
 				'id' => $id,
 				'anyfield' => 'anyvalue',
@@ -96,7 +96,7 @@ Use Cases
 
 	class MyModel extends Model {
 
-		fucntion delete_record($id) {
+		function delete_record($id) {
 			$this->delete($id);
 		}
 
@@ -106,7 +106,7 @@ Use Cases
 
 	class MyModel extends Model {
 
-		fucntion read_record($id) {
+		function read_record($id) {
 			$this->findById($id);
 		}
 
@@ -120,15 +120,15 @@ The params to use here are :
 * *view* the name of the view you want to request
 * *params* an array of [query options](http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options)
 
-	class MyModel extends Model {
+		class MyModel extends Model {
 
-		fucntion read_view($start, $end) {
-			$this->find('all', array(
-				'design' => 'mycouchdbdesign',
-				'view' => 'mycouchdbview',
-				'params' => array('start_key' => $start, 'end_key' => $end, 'group' => null)
-			));
+			function read_view($start, $end) {
+				$this->find('all', array(
+					'design' => 'mycouchdbdesign',
+					'view' => 'mycouchdbview',
+					'params' => array('start_key' => $start, 'end_key' => $end, 'group' => null)
+				));
+			}
+
 		}
-
-	}
 

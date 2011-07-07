@@ -116,9 +116,9 @@ Use Cases
 
 The params to use here are :
 
-* *design* the CouchDB design where the view resides
-* *view* the name of the view you want to request
-* *params* an array of [query options](http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options)
+* *design* : the CouchDB design where the view resides
+* *view* : the name of the view you want to request
+* *params* : an array of [query options](http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options)
 
 		class MyModel extends Model {
 

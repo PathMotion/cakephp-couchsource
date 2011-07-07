@@ -11,6 +11,7 @@ After having [set the couchdb](http://wiki.apache.org/couchdb/Installation) engi
 
 * Put the *couch_source.php* file into the *datasource* directory, usually <code>app/models/datasource</code>.
 * Edit the *database.php* configuration file to add the following :
+
 	class DATABASE_CONFIG {
 		
 		// [...]
@@ -24,7 +25,9 @@ After having [set the couchdb](http://wiki.apache.org/couchdb/Installation) engi
 		);
 	
 	}
+	
 * create a model that you want to use CouchDB
+
 	class MyModel extends Model {
 
 		public $name = 'MyModel';
@@ -32,7 +35,8 @@ After having [set the couchdb](http://wiki.apache.org/couchdb/Installation) engi
 		public $useTable = 'couchdb_database_name';
 		public $primaryKey = 'id';
 
-		// since CouchDB is shema-less, the fields here are only required for CakePHP to validate and save them into the database
+		// since CouchDB is shema-less, the fields here are only required 
+		// for CakePHP to validate and save them into the database
 		public $_schema = array(
 			'id' => array(
 				'type' => 'string',
@@ -111,6 +115,7 @@ Use Cases
 ### **Read** data from a view
 
 The params to use here are :
+
 * *design* the CouchDB design where the view resides
 * *view* the name of the view you want to request
 * *params* an array of [query options](http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options)

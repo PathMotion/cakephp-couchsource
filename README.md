@@ -12,48 +12,48 @@ After having [set the couchdb](http://wiki.apache.org/couchdb/Installation) engi
 * Put the *couch_source.php* file into the *datasource* directory, usually <code>app/models/datasource</code>.
 * Edit the *database.php* configuration file to add the following :
 
-	class DATABASE_CONFIG {
+		class DATABASE_CONFIG {
 		
-		// [...]
+			// [...]
 		
-		var $couch = array(
-			'datasource' => 'couch',
-			'host' => '127.0.0.1',
-			'port' => 5984,
-			'user' => 'my_couchdb_user',
-			'password' => 'my_couchdb_password'
-		);
+			var $couch = array(
+				'datasource' => 'couch',
+				'host' => '127.0.0.1',
+				'port' => 5984,
+				'user' => 'my_couchdb_user',
+				'password' => 'my_couchdb_password'
+			);
 	
-	}
+		}
 	
 * create a model that you want to use CouchDB
 
-	class MyModel extends Model {
+		class MyModel extends Model {
 
-		public $name = 'MyModel';
-		public $useDbConfig = 'couch';
-		public $useTable = 'couchdb_database_name';
-		public $primaryKey = 'id';
+			public $name = 'MyModel';
+			public $useDbConfig = 'couch';
+			public $useTable = 'couchdb_database_name';
+			public $primaryKey = 'id';
 
-		// since CouchDB is shema-less, the fields here are only required 
-		// for CakePHP to validate and save them into the database
-		public $_schema = array(
-			'id' => array(
-				'type' => 'string',
-				'key' => 'primary',
-				'length' => 32
-			),
-			'anyfield' => array(
-				'type' => 'json',
-				'null' => true
-			),
-			'anotherfield' => array(
-				'type' => 'json',
-				'null' => true
-			)
-		);
+			// since CouchDB is shema-less, the fields here are only required 
+			// for CakePHP to validate and save them into the database
+			public $_schema = array(
+				'id' => array(
+					'type' => 'string',
+					'key' => 'primary',
+					'length' => 32
+				),
+				'anyfield' => array(
+					'type' => 'json',
+					'null' => true
+				),
+				'anotherfield' => array(
+					'type' => 'json',
+					'null' => true
+				)
+			);
 		
-	}
+		}
 
 Use Cases
 ---------

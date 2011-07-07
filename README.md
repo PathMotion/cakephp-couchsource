@@ -1,7 +1,7 @@
 CouchSource
 ===========
 
-CouchSource is a [CakePHP datasource](http://book.cakephp.org/view/1075/DataSources) allowing to build Models from a [CouchDB](http://couchdb.apache.org/) database.
+CouchSource is a [CakePHP datasource](http://book.cakephp.org/view/1075/DataSources) allowing to build Models from a [CouchDB](http://couchdb.apache.org/) database.  
 This is the one in use on the [PathMotion](http://www.pathmotion.com) website.
 
 Install

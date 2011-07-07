@@ -114,7 +114,7 @@ Use Cases
 	
 ### **Read** data from a view
 
-The params to use here are :
+The [*find* params](http://book.cakephp.org/view/1018/find) to use here are :
 
 * *design* : the CouchDB design where the view resides
 * *view* : the name of the view you want to request

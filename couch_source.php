@@ -10,7 +10,6 @@ class CouchSource extends DataSource {
 		'group' => null
 	);
 
-
 	public function __construct($config = null, $autoConnect = true) {
 		parent::__construct($config, $autoConnect);
 		if($autoConnect) {
@@ -85,13 +84,14 @@ class CouchSource extends DataSource {
 		$uri = $base_uri . '?' . http_build_query(array_merge(self::$default_params, isset($queryData['params']) ? $queryData['params'] : array()));
 		
 		$raw_result = $this->decode($this->Socket->get($uri));
-		
-		if(isset($raw_result->error)) {
+
+		if(isset($raw_result['error'])) {
 			return false;
 		}
 		
 		$result = array();
 		if(isset($queryData['conditions'][$model->alias . '.id'])) {
+			// one document is requested
 			if($queryData['fields'] == 'count') {
 				$result[] = array( $model->alias => array(
 					'count' => 1
@@ -101,10 +101,12 @@ class CouchSource extends DataSource {
 			}
 		} else {
 			if($queryData['fields'] == 'count') {
+				// documents count is requested
 				$result[] = array( $model->alias => array(
 					'count' => count($raw_result->rows)
 				));
 			} else {
+				// a collection of documents is requested
 				if (isset($raw_result['rows']) && !empty($raw_result['rows'])){
 					foreach($raw_result['rows'] as $row) {
 						$result[] = array( $model->alias => $row);
@@ -118,23 +120,40 @@ class CouchSource extends DataSource {
 	}
 	
 	public function create(&$model, $fields = null, $values = null) {
+		
+		// rebuild the data array
 		if ($fields !== null && $values !== null) {
 			$data = array_combine($fields, $values);
 		}
+
+		// id is specified => PUT method (even on a unexisting document)
+		// otherwise => POST method (id is build by the CouchDB engine)
+		if(in_array($model->primaryKey, $fields)) {
+			$id = $data[$model->primaryKey];
+			unset($data[$model->primaryKey]);
+			return $this->decode($this->Socket->put(
+				sprintf('/%s/%s', $model->table, $id),
+				$this->encode($data)
+			));
+		} else {
+			return $this->decode($this->Socket->post(
+				sprintf(sprintf('/%s', $model->table)),
+				$this->encode($data)
+			));
+		}
 		
-		return $this->decode($this->Socket->post(
-			sprintf(sprintf('/%s', $model->table)),
-			$this->encode($data)
-		));
 	}
 	
 	public function update(&$model, $fields = null, $values = null) {
-
+		
+		// not all the fields can be passed there, so merge with the existing document
 		if ($fields !== null && $values !== null) {
 			$data = array_combine($fields, $values);
 			$id = $data[$model->primaryKey];
 			$actual_data = $model->find('first', array('conditions' => array($model->alias . '.id' => $id)));
-			$data = array_merge($actual_data[$model->alias], $data);
+			if($actual_data) {
+				$data = array_merge($actual_data[$model->alias], $data);
+			}
 			unset($data[$model->primaryKey]);
 		}
 
@@ -155,7 +174,6 @@ class CouchSource extends DataSource {
 			);
 		}
 	}
-	
 	
 	public function calculate(&$model, $func, $params = array()) {
 		return 'count';

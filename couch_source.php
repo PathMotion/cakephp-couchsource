@@ -175,6 +175,33 @@ class CouchSource extends DataSource {
 		}
 	}
 	
+	public function query($method, $params, &$model) {
+
+		if (strpos(strtolower($method), 'findby') === 0 || strpos(strtolower($method), 'findallby') === 0) {
+
+			if (strpos(strtolower($method), 'findby') === 0) {
+				$all  = false;
+				$field = Inflector::underscore(preg_replace('/^findBy/i', '', $method));
+			} else {
+				$all  = true;
+				$field = Inflector::underscore(preg_replace('/^findAllBy/i', '', $method));
+			}
+
+			$conditions = array($model->alias . '.' . $field => $params[0]);
+
+			if ($all) {
+				return $model->find('all', array(
+					'conditions' => $conditions
+				));
+			} else {
+				return $model->find('first', array(
+					'conditions' => $conditions
+				));
+			}
+		}
+		
+	}
+	
 	public function calculate(&$model, $func, $params = array()) {
 		return 'count';
 	}

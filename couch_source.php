@@ -68,13 +68,13 @@ class CouchSource extends DataSource {
 
 		if(isset($queryData['view'])) {
 			// request a view
-			$base_uri = sprintf('/%s/_design/%s/_view/%s', $model->table, $queryData['design'], $queryData['view']);
+			$base_uri = sprintf('/%s/_design/%s/_view/%s', $this->getDbName($model), $queryData['design'], $queryData['view']);
 		} elseif(isset($queryData['conditions'][$model->alias . '.id'])) {
 			// request a specific document
-			$base_uri = sprintf('/%s/%s', $model->table, $queryData['conditions'][$model->alias . '.id']);
+			$base_uri = sprintf('/%s/%s', $this->getDbName($model), $queryData['conditions'][$model->alias . '.id']);
 		} else {
 			// request all documents
-			$base_uri = sprintf('/%s/_all_docs', $model->table);
+			$base_uri = sprintf('/%s/_all_docs', $this->getDbName($model));
 		}
 		
 		if($queryData['fields'] == 'count') {
@@ -114,7 +114,7 @@ class CouchSource extends DataSource {
 				}
 			}
 		}
-		
+
 		return $result;
 		
 	}
@@ -132,12 +132,12 @@ class CouchSource extends DataSource {
 			$id = $data[$model->primaryKey];
 			unset($data[$model->primaryKey]);
 			return $this->decode($this->Socket->put(
-				sprintf('/%s/%s', $model->table, $id),
+				sprintf('/%s/%s', $this->getDbName($model), $id),
 				$this->encode($data)
 			));
 		} else {
 			return $this->decode($this->Socket->post(
-				sprintf(sprintf('/%s', $model->table)),
+				sprintf(sprintf('/%s', $this->getDbName($model))),
 				$this->encode($data)
 			));
 		}
@@ -158,7 +158,7 @@ class CouchSource extends DataSource {
 		}
 
 		return $this->decode($this->Socket->put(
-			sprintf('/%s/%s', $model->table, $id),
+			sprintf('/%s/%s', $this->getDbName($model), $id),
 			$this->encode($data)
 		));
 	}
@@ -170,7 +170,7 @@ class CouchSource extends DataSource {
 		
 		if($actual_data !== false) {
 			$this->Socket->delete(
-				sprintf('/%s/%s?rev=%s', $model->table, $actual_data[$model->alias]['_id'], $actual_data[$model->alias]['_rev'])
+				sprintf('/%s/%s?rev=%s', $this->getDbName($model), $actual_data[$model->alias]['_id'], $actual_data[$model->alias]['_rev'])
 			);
 		}
 	}
@@ -204,6 +204,10 @@ class CouchSource extends DataSource {
 	
 	public function calculate(&$model, $func, $params = array()) {
 		return 'count';
+	}
+	
+	public function getDbName(&$model) {
+		return isset($this->config['prefix']) ? sprintf('%s_%s', $this->config['prefix'], $model->table) : $model->table;
 	}
 	
 }

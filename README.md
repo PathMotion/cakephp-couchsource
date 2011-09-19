@@ -21,7 +21,8 @@ After having [set the couchdb](http://wiki.apache.org/couchdb/Installation) engi
 				'host' => '127.0.0.1',
 				'port' => 5984,
 				'user' => 'my_couchdb_user',
-				'password' => 'my_couchdb_password'
+				'password' => 'my_couchdb_password',
+				'auth_method' => 'cookie' // (or 'basic')
 			);
 	
 		}

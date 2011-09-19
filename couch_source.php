@@ -19,22 +19,47 @@ class CouchSource extends DataSource {
 	
 	public function connect() {
 		if (!$this->connected) {
+			
 			$this->Socket = new HttpSocket(array( 'request' => array( 
 				'uri' => array(
 					'host' => $this->config['host'],
-					'port' => $this->config['port'],
-					'user' => $this->config['user'],
-					'pass' => $this->config['password']
+					'port' => $this->config['port']
 				),
 				'header' => array(
 					'Content-Type' => 'application/json'
 				)
 			)));
+			
+			switch($this->config['auth_method']) {
+				case 'cookie':
+					$this->cookieConnect();
+				break;
+				case 'basic':
+					$this->basicConnect();
+				break;
+			}
+			
 			if (strpos($this->Socket->get('/'), 'couchdb') !== false) {
 				$this->connected = true;
 			}
+			
 		}
 		return $this->connected;
+	}
+	
+	private function basicConnect() {
+		$this->Socket->config['request']['uri']['user'] = $this->config['user'];
+		$this->Socket->config['request']['uri']['pass'] = $this->config['password'];
+	}
+	
+	private function cookieConnect() {
+		$this->Socket->post('/_session', array(
+				'name' => $this->config['user'],
+				'password' => $this->config['password']
+			), array('header' => array(
+				'Content-Type' =>  'application/x-www-form-urlencoded'
+			))
+		);
 	}
 	
 	public function close() {
